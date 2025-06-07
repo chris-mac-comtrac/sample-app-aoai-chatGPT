@@ -837,3 +837,15 @@ class _AppSettings(BaseModel):
 
 
 app_settings = _AppSettings()
+
+
+class _FormRecognizerSettings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_prefix="AZURE_FORMRECOGNIZER_",
+        env_file=DOTENV_PATH,
+        extra="ignore",
+        env_ignore_empty=True
+    )
+    service_name: str
+    resource_group: Optional[str] = None
+    key: Optional[str] = None

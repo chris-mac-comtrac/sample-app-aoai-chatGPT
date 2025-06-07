@@ -352,3 +352,20 @@ export const historyMessageFeedback = async (messageId: string, feedback: string
     })
   return response
 }
+
+export async function processDocumentWithAI(file: File) {
+  const formData = new FormData()
+  formData.append('file', file)
+  
+  const response = await fetch('/process_document', {
+    method: 'POST',
+    body: formData
+  })
+  
+  if (!response.ok) {
+    const error = await response.json()
+    throw new Error(error.error || 'Document processing failed')
+  }
+  
+  return await response.json()
+}

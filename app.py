@@ -1060,4 +1060,132 @@ async def generate_title(conversation_messages) -> str:
         return messages[-2]["content"]
 
 
+@bp.route("/process_document", methods=["POST"])
+async def process_document():
+    try:
+        files = await request.files
+        if 'file' not in files:
+            return jsonify({"error": "No file provided"}), 400
+        
+        file = files['file']
+        if file.filename == '':
+            return jsonify({"error": "No file selected"}), 400
+        
+        # Extract text content from file
+        extracted_content = await extract_text_content(file)
+        
+        # Enhance with OpenAI analysis
+        analysis = await analyze_with_openai(extracted_content, file.filename)
+        
+        # Return structure that matches frontend expectations
+        return jsonify({
+            "success": True,
+            "filename": file.filename,
+            "enhanced_content": {
+                "summary": analysis,  # Frontend expects this path
+                "original_text": extracted_content
+            }
+        }), 200
+        
+    except Exception as e:
+        logging.exception("Exception in /process_document")
+        return jsonify({"error": str(e)}), 500
+
+async def extract_text_content(file):
+    """Extract text from various file types"""
+    import tempfile
+    import os
+    from pathlib import Path
+    
+    # Get file extension
+    file_ext = Path(file.filename).suffix.lower()
+    
+    # Read file content (NOT async - remove await)
+    file_content = file.read()  # Remove 'await' here
+    file.seek(0)  # Reset file pointer
+    
+    try:
+        if file_ext in ['.txt', '.md', '.py', '.js', '.html', '.css', '.json', '.xml', '.csv']:
+            # Plain text files
+            return file_content.decode('utf-8')
+            
+        elif file_ext == '.pdf':
+            # PDF extraction
+            try:
+                import PyPDF2
+                import io
+                
+                pdf_reader = PyPDF2.PdfReader(io.BytesIO(file_content))
+                text = ""
+                for page in pdf_reader.pages:
+                    text += page.extract_text() + "\n"
+                return text
+            except ImportError:
+                return "PDF processing requires PyPDF2. Install with: pip install PyPDF2"
+                
+        elif file_ext in ['.docx', '.doc']:
+            # Word document extraction
+            try:
+                import docx
+                import io
+                
+                doc = docx.Document(io.BytesIO(file_content))
+                text = ""
+                for paragraph in doc.paragraphs:
+                    text += paragraph.text + "\n"
+                return text
+            except ImportError:
+                return "Word document processing requires python-docx. Install with: pip install python-docx"
+        
+        else:
+            # Try to decode as text
+            try:
+                return file_content.decode('utf-8')
+            except UnicodeDecodeError:
+                return f"Unsupported file type: {file_ext}. Please upload text-based files."
+                
+    except Exception as e:
+        return f"Error extracting content from {file.filename}: {str(e)}"
+
+async def analyze_with_openai(content, filename):
+    """Analyze document content using Azure OpenAI"""
+    azure_openai_client = await init_openai_client()
+    
+    # Truncate content if too long (GPT-3.5-turbo-16k can handle ~16k tokens)
+    max_content_length = 12000  # Leave room for prompt and response
+    if len(content) > max_content_length:
+        content = content[:max_content_length] + "\n\n[Content truncated...]"
+    
+    analysis_prompt = f"""
+Analyze this document "{filename}" and provide:
+
+1. **Document Summary** (2-3 sentences)
+2. **Key Topics** (bullet points)
+3. **Important Information** (names, dates, numbers, key facts)
+4. **Document Type** (report, code, article, etc.)
+5. **Main Sections** (if applicable)
+
+Document Content:
+{content}
+
+Provide a structured analysis that will help users ask questions about this document.
+"""
+    
+    try:
+        response = await azure_openai_client.chat.completions.create(
+            model=app_settings.azure_openai.model,
+            messages=[
+                {"role": "system", "content": "You are a document analysis expert. Provide clear, structured analysis of documents to help users understand and query the content."},
+                {"role": "user", "content": analysis_prompt}
+            ],
+            temperature=0.1,
+            max_tokens=800
+        )
+        
+        return response.choices[0].message.content
+        
+    except Exception as e:
+        logging.warning(f"OpenAI analysis failed: {e}")
+        return f"Document uploaded successfully. Content length: {len(content)} characters. Ready for questions!"
+
 app = create_app()
