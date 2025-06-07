@@ -201,8 +201,8 @@ export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend, conv
         </label>
       </div>
 
-      {/* Image Upload */}
-      <div style={{ marginLeft: '8px', marginRight: '8px' }}>
+      {/* Image Upload - REMOVED */}
+      {/* <div style={{ marginLeft: '8px', marginRight: '8px' }}>
         <input
           type="file"
           id="imageInput"
@@ -229,7 +229,7 @@ export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend, conv
         >
           📷
         </label>
-      </div>
+      </div> */}
 
       {/* Image preview removed - only show green icon indicator */}
       {/* {base64Image && <img className={styles.uploadedImage} src={base64Image} alt="Uploaded Preview" />} */}
