@@ -172,50 +172,62 @@ export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend, conv
       />
 
       {/* Document Upload */}
-      <div className={styles.fileInputContainer}>
+      <div style={{ marginLeft: '8px', marginRight: '8px' }}>
         <input
           type="file"
           id="fileInput"
           onChange={handleFileUpload}
           accept=".txt,.md,.py,.js,.html,.css,.json,.xml,.csv,.pdf,.docx,.doc"
-          className={styles.fileInput}
+          style={{ display: 'none' }}
         />
         <label 
           htmlFor="fileInput" 
-          className={styles.fileLabel} 
-          aria-label='Upload Document'
           style={{
-            backgroundColor: uploadedFile ? '#0078d4' : undefined,  // Blue when file loaded
-            color: uploadedFile ? 'white' : undefined,
-            border: uploadedFile ? '2px solid #0078d4' : undefined
+            cursor: 'pointer',
+            padding: '8px',
+            borderRadius: '4px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: uploadedFile ? '#0078d4' : '#f3f2f1',
+            color: uploadedFile ? 'white' : '#605e5c',
+            border: '1px solid #ccc',
+            minWidth: '40px',
+            minHeight: '40px'
           }}
+          aria-label='Upload Document'
         >
-          <FontIcon
-            className={styles.fileIcon}
-            iconName={'Attach'}
-            aria-label='Upload Document'
-            style={{
-              color: uploadedFile ? 'white' : undefined  // White icon when file loaded
-            }}
-          />
+          📎
         </label>
       </div>
 
-      {/* Image Upload (always show) - Remove the OYD_ENABLED condition */}
-      <div className={styles.fileInputContainer}>
+      {/* Image Upload */}
+      <div style={{ marginLeft: '8px', marginRight: '8px' }}>
         <input
           type="file"
           id="imageInput"
           onChange={handleImageUpload}
           accept="image/*"
-          className={styles.fileInput}
+          style={{ display: 'none' }}
         />
-        <label htmlFor="imageInput" className={styles.fileLabel} aria-label='Upload Image'>
-          <FontIcon
-            className={styles.fileIcon}
-            iconName={'PhotoCollection'}
-            aria-label='Upload Image'
-          />
+        <label 
+          htmlFor="imageInput" 
+          style={{
+            cursor: 'pointer',
+            padding: '8px',
+            borderRadius: '4px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: base64Image ? '#28a745' : '#f3f2f1',
+            color: base64Image ? 'white' : '#605e5c',
+            border: '1px solid #ccc',
+            minWidth: '40px',
+            minHeight: '40px'
+          }}
+          aria-label='Upload Image'
+        >
+          📷
         </label>
       </div>
 
