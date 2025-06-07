@@ -201,25 +201,23 @@ export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend, conv
         </label>
       </div>
 
-      {/* Image Upload (original functionality) */}
-      {!OYD_ENABLED && (
-        <div className={styles.fileInputContainer}>
-          <input
-            type="file"
-            id="imageInput"
-            onChange={handleImageUpload}
-            accept="image/*"
-            className={styles.fileInput}
+      {/* Image Upload - Remove the !OYD_ENABLED condition */}
+      <div className={styles.fileInputContainer}>
+        <input
+          type="file"
+          id="imageInput"
+          onChange={handleImageUpload}
+          accept="image/*"
+          className={styles.fileInput}
+        />
+        <label htmlFor="imageInput" className={styles.fileLabel} aria-label='Upload Image'>
+          <FontIcon
+            className={styles.fileIcon}
+            iconName={'PhotoCollection'}
+            aria-label='Upload Image'
           />
-          <label htmlFor="imageInput" className={styles.fileLabel} aria-label='Upload Image'>
-            <FontIcon
-              className={styles.fileIcon}
-              iconName={'PhotoCollection'}
-              aria-label='Upload Image'
-            />
-          </label>
-        </div>
-      )}
+        </label>
+      </div>
 
       {base64Image && <img className={styles.uploadedImage} src={base64Image} alt="Uploaded Preview" />}
       
