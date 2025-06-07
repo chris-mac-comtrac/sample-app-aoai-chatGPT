@@ -253,12 +253,22 @@ def prepare_model_args(request_body, request_headers):
         if message:
             match message["role"]:
                 case "user":
-                    messages.append(
-                        {
+                    # Handle vision messages (images + text)
+                    content = message["content"]
+                    
+                    # Check if content is a vision format (array with text and image)
+                    if isinstance(content, list) and len(content) >= 2:
+                        # This is a vision message - pass it directly to OpenAI
+                        messages.append({
                             "role": message["role"],
-                            "content": message["content"]
-                        }
-                    )
+                            "content": content  # Keep the vision format
+                        })
+                    else:
+                        # Regular text message
+                        messages.append({
+                            "role": message["role"],
+                            "content": content
+                        })
                 case "assistant" | "function" | "tool":
                     messages_helper = {}
                     messages_helper["role"] = message["role"]
@@ -273,12 +283,11 @@ def prepare_model_args(request_body, request_headers):
                     
                     messages.append(messages_helper)
 
-
     user_security_context = None
     if (MS_DEFENDER_ENABLED):
         authenticated_user_details = get_authenticated_user_details(request_headers)
         application_name = app_settings.ui.title
-        user_security_context = get_msdefender_user_json(authenticated_user_details, request_headers, application_name )  # security component introduced here https://learn.microsoft.com/en-us/azure/defender-for-cloud/gain-end-user-context-ai
+        user_security_context = get_msdefender_user_json(authenticated_user_details, request_headers, application_name )
     
 
     model_args = {

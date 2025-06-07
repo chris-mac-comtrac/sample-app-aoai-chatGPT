@@ -580,7 +580,7 @@ const Chat = () => {
         // Returning the prettified error message
         if (reason !== '') {
           return (
-            'The prompt was filtered due to triggering Azure OpenAI’s content filtering system.\n' +
+            'The prompt was filtered due to triggering Azure OpenAI's content filtering system.\n' +
             'Reason: This prompt contains content flagged as ' +
             reason +
             '\n\n' +
@@ -802,7 +802,22 @@ const Chat = () => {
                     {answer.role === 'user' ? (
                       <div className={styles.chatMessageUser} tabIndex={0}>
                         <div className={styles.chatMessageUserMessage}>
-                          {typeof answer.content === "string" && answer.content ? answer.content : Array.isArray(answer.content) ? <>{answer.content[0].text} <img className={styles.uploadedImageChat} src={answer.content[1].image_url.url} alt="Uploaded Preview" /></> : null}
+                          {typeof answer.content === "string" ? (
+                            answer.content
+                          ) : Array.isArray(answer.content) ? (
+                            <>
+                              {answer.content[0]?.text || ""}
+                              {answer.content[1]?.image_url?.url && (
+                                <img 
+                                  className={styles.uploadedImageChat} 
+                                  src={answer.content[1].image_url.url} 
+                                  alt="Uploaded Preview" 
+                                />
+                              )}
+                            </>
+                          ) : (
+                            "Invalid message content"
+                          )}
                         </div>
                       </div>
                     ) : answer.role === 'assistant' ? (
