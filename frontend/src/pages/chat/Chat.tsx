@@ -580,7 +580,7 @@ const Chat = () => {
         // Returning the prettified error message
         if (reason !== '') {
           return (
-            'The prompt was filtered due to triggering Azure OpenAI's content filtering system.\n' +
+            'The prompt was filtered due to triggering Azure OpenAI\'s content filtering system.\n' +
             'Reason: This prompt contains content flagged as ' +
             reason +
             '\n\n' +

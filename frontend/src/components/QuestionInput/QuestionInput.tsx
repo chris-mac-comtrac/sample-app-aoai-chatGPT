@@ -231,7 +231,8 @@ export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend, conv
         </label>
       </div>
 
-      {base64Image && <img className={styles.uploadedImage} src={base64Image} alt="Uploaded Preview" />}
+      {/* Image preview removed - only show green icon indicator */}
+      {/* {base64Image && <img className={styles.uploadedImage} src={base64Image} alt="Uploaded Preview" />} */}
       
       <div
         className={styles.questionInputSendButtonContainer}
