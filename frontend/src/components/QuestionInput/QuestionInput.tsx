@@ -201,7 +201,7 @@ export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend, conv
         </label>
       </div>
 
-      {/* Image Upload - Remove the !OYD_ENABLED condition */}
+      {/* Image Upload (always show) - Remove the OYD_ENABLED condition */}
       <div className={styles.fileInputContainer}>
         <input
           type="file"
