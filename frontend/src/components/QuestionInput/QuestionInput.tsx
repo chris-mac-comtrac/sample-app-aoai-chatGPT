@@ -75,9 +75,7 @@ export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend, conv
       questionContent = `File: ${uploadedFile.filename}\n\n${uploadedFile.full_content}\n\nUser Question: ${question}`
     }
 
-    const questionTest: ChatMessage["content"] = base64Image ? 
-      [{ type: "text", text: questionContent }, { type: "image_url", image_url: { url: base64Image } }] : 
-      questionContent
+    const questionTest: ChatMessage["content"] = questionContent
 
     if (conversationId && questionTest !== undefined) {
       onSend(questionTest, conversationId)
@@ -88,7 +86,6 @@ export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend, conv
     if (clearOnSend) {
       setQuestion('')
       setUploadedFile(null)
-      setBase64Image(null)
     }
   }
 
