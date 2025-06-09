@@ -177,7 +177,7 @@ export function ChatHistoryPanel(_props: ChatHistoryPanelProps) {
                     <StackItem>
                       <Text style={{ alignSelf: 'center', fontWeight: '400', fontSize: 16 }}>
                         {appStateContext?.state.isCosmosDBAvailable?.status && (
-                          <span>{appStateContext?.state.isCosmosDBAvailable?.status}</span>
+                          <span>{String(appStateContext?.state.isCosmosDBAvailable?.status)}</span>
                         )}
                         {!appStateContext?.state.isCosmosDBAvailable?.status && <span>Error loading chat history</span>}
                       </Text>
